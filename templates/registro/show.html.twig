@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Registro{% endblock %}
+
+{% block body %}
+    <div class="container mt-3">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_registro_index') }}">Registros</a></li>
+                <li class="breadcrumb-item active" aria-current="page"> {{  registro.slug }} </li>
+            </ol>
+        </nav>
+        <div class="row">
+            <div class="col-8">
+                <div class="card border-dark mt-3" style="max-width: 100%">
+                    <div class="card-header">Información personal</div>
+                    <div class="card-body text-dark">
+                        <h5 class="card-title">{{ registro.nombre }} {{ registro.paterno }} {{ registro.materno }} </h5>
+                        <p class="card-text">
+                            <strong> {{ registro.mail }} </strong> <br>
+                            {% set edad = date().diff(date(registro.nacimiento)).y %}
+                            {{ registro.nacimiento |format_date('long',locale='es') }}, <small><em> {{ registro.sexo }}, {{ edad }} años</em></small>
+                        </p>
+                        <p class="card-text">
+                            {% if registro.credencialName != null %}
+                            <a href="{{ vich_uploader_asset(registro, 'credencialFile') }}"  target="_blank" > <span class="badge rounded-pill bg-primary"><i class="fa-regular fa-file-pdf"></i> Credencial</span></a>
+                        {% else %}
+                            <span class="badge rounded-pill bg-warning text-dark">Sin credencial</span>
+                        {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-8">
+                <div class="card border-dark mt-3" style="max-width: 100%">
+                    <div class="card-header">Información académica</div>
+                    <div class="card-body text-dark">
+                        <h5 class="card-title">{{ registro.procedencia }} </h5>
+                        <p class="card-text">
+                            {{ registro.carrera }}, {{ registro.semestre ~ " (semestre o cuatrimestre)" }}, {{ registro.porcentaje ~ "% de avance"  }}, promedio {{ registro.promedio }}
+                        </p>
+                        <p class="card-text">
+                            Recomendado por <strong>{{ registro.profesor }}</strong>, <small><em>{{ registro.mailprofesor }}</em></small><br>
+                            {{ registro.univprofesor| title }}
+                        </p>
+                        <p class="card-text">
+                            {% if registro.cartaName != null %}
+                            <a href="{{ vich_uploader_asset(registro, 'cartaFile') }}"  target="_blank" > <span class="badge rounded-pill bg-primary"><i class="fa-regular fa-file-pdf"></i> Carta de recomendación</span></a>
+                        {% else %}
+                            <span class="badge rounded-pill bg-warning text-dark">Sin carta de recomendación</span>
+                        {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-8">
+                <div class="card border-dark mt-3" style="max-width: 100%">
+                    <div class="card-header">{{ evento }}</div>
+                    <div class="card-body text-dark">
+                        <p> Requiere beca de <strong>{{ registro.beca }}</strong></p>
+                        <p class="card-text">Restricciones de alimentación: <em>"{{ registro.restricciones }}"</em> </p>
+                        <p class="card-text">Curso 1: <em>{{ registro.curso1 }}</em> </p>
+                        <p class="card-text">Curso 2: <em>{{ registro.curso2 }}</em> </p>
+
+                        <p class="card-text">Razones por la que quiere asistir: <em>"{{ registro.razones }}"</em>
+                        </p>
+                        <p>
+                            {{ registro.aceptado ? '<span class="badge rounded-pill bg-success">Participante aceptado</span>' : '<span class="badge rounded-pill bg-danger">Participante no aceptado</span>' }}
+                            {{ registro.confirmado ? '<span class="badge rounded-pill bg-success">Participante confirmado</span>' : '<span class="badge rounded-pill bg-warning text-dark">Participante no confirmado</span>' }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-8">
+                <div class="card border-dark mt-3" style="max-width: 100%">
+                    <div class="card-header">Información de control</div>
+                    <div class="card-body text-dark">
+                        <p class="card-text">
+                        <address>
+                            <span class="badge rounded-pill bg-light text-dark">Registro realizado: {{ registro.created |format_date('long',locale='es')}} </span>
+                            <span class="badge rounded-pill bg-light text-dark">Registro modificado: {{ registro.modified |format_date('long',locale='es')}}</span>
+                            <hr>
+                            {% if registro.comentarios != null %}
+                                <p> {{registro.comentarios}} </p>
+                            {% else %}
+                                <p>  <span class="badge rounded-pill bg-warning text-dark">No tiene comentarios</span></p>
+                            {% endif %}
+                            <div {{ stimulus_controller('modal-form', {
+                                formUrl: path('app_registro_evaluacion',{'slug':registro.slug})
+                            }) }}>
+                                <button
+                                        class="btn btn-primary btn-sm"
+                                        data-action="modal-form#openModal"
+                                >Evaluar registro</button>
+                                {{ include('registro/_modal.html.twig', {
+                                    modalTitle: 'Evaluar registro',
+                                }) }}
+                            </div>
+                        </address>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ evento }}{% endblock %}
+
+{% block body %}
+
+    {{ include('registro/_form.html.twig') }}
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('onchange') }}
+{% endblock %}

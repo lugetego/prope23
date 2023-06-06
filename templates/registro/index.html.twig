@@ -1,0 +1,204 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Registros{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap5.min.css">
+{% endblock %}
+{% block body %}
+
+    {% if is_granted('ROLE_ADMIN') %}
+
+        {% set hombres = 0 %}
+        {% set mujeres = 0 %}
+        {% set recomendados = 0 %}
+        {% set alimentacion = 0 %}
+        {% set hospedaje = 0 %}
+        {% set hospyalim = 0 %}
+        {% set transporte = 0 %}
+        {% set aceptados = 0 %}
+        {% set confirmados = 0 %}
+
+
+        {% for registro in registros %}
+            {% if registro.sexo == 'Hombre' %}
+                {% set hombres = hombres + 1 %}
+            {% endif %}
+        {% endfor %}
+        {% for registro in registros %}
+            {% if registro.sexo == 'Mujer' %}
+                {% set mujeres = mujeres + 1 %}
+            {% endif %}
+        {% endfor %}
+        {% for registro in registros %}
+            {% if registro.recomendacion == true or registro.cartaName == true%}
+                {% set recomendados = recomendados + 1 %}
+            {% endif %}
+        {% endfor %}
+        {% for registro in registros %}
+            {% if registro.beca == 'Solamente alimentación' %}
+                {% set alimentacion = alimentacion + 1 %}
+            {% endif %}
+        {% endfor %}
+        {% for registro in registros %}
+            {% if registro.beca == 'Solamente hospedaje' %}
+                {% set hospedaje = hospedaje + 1 %}
+            {% endif %}
+        {% endfor %}
+        {% for registro in registros %}
+            {% if registro.beca == 'Hospedaje y alimentación' %}
+                {% set hospyalim = hospyalim + 1 %}
+            {% endif %}
+        {% endfor %}
+
+        {% for registro in registros %}
+            {% if registro.aceptado == true %}
+                {% set aceptados = aceptados + 1 %}
+            {% endif %}
+        {% endfor %}
+        {% for registro in registros %}
+            {% if registro.confirmado == true %}
+                {% set confirmados = confirmados + 1 %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    <div class="container-fluid">
+        <button type="button" class="btn btn-light mb-5 ">
+            Mujeres <span class="badge bg-dark">{{ mujeres }}</span>
+        </button>
+        <button type="button" class="btn btn-light mb-5 ">
+            Hombres <span class="badge bg-dark">{{ hombres }}</span>
+        </button>
+
+        <button type="button" class="btn btn-light mb-5 ">
+            Solo hosp. <span class="badge bg-dark">{{ hospedaje }}</span>
+        </button>
+        <button type="button" class="btn btn-light mb-5 ">
+            Solo alim. <span class="badge bg-dark">{{ alimentacion }}</span>
+        </button>
+        <button type="button" class="btn btn-light mb-5 ">
+            Hosp. y alim. <span class="badge bg-dark">{{ hospyalim }}</span>
+        </button>
+
+        <button type="button" class="btn btn-light mb-5 ">
+            Recomendados <span class="badge bg-dark">{{ recomendados }}</span>
+        </button>
+        <button type="button" class="btn btn-light mb-5 ">
+            Aceptados <span class="badge bg-dark">{{ aceptados }}</span>
+        </button>
+        <button type="button" class="btn btn-light mb-5 ">
+            Confirmados <span class="badge bg-dark">{{ confirmados }}</span>
+        </button>
+        <button type="button" class="btn btn-light mb-5 " data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <u>Correos registrados</u> <span class="badge bg-primary">{{ registros|length }}</span>
+        </button>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Correos registrados</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% set total = 0 %}
+                    {% for registro in registros %}
+                        {{registro.mail}}
+                        {% if not loop.last %},{% endif %}
+                        {%if total == 50 or total == 100 or total== 150
+                            or total == 200 or total == 250 or total == 300 %}
+                            <hr>
+                        {%endif %}
+                        {% set total = total + 1 %}
+                    {% endfor %}
+
+                    <p>
+                        <br> {{ total }} correos
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table id="example" class="mt-5 table table-striped" style="width:100%">
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Sexo</th>
+            <th>Edad (años)</th>
+            <th>Mail</th>
+            <th>Procedencia</th>
+            <th>Carrera</th>
+            <th>Semestre</th>
+            <th>Porcentaje</th>
+            <th>Profesor</th>
+            <th>Promedio</th>
+            {#                <th>Confirmado</th>#}
+            <th>Restricciones alim.</th>
+            <th>Beca</th>
+            <th>Recomendado</th>
+            <th>Aceptado</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for registro in registros %}
+            {% set edad = date().diff(date(registro.nacimiento)).y %}
+            <tr>
+                <td><a href="{{ path('app_registro_show', {'slug': registro.slug}) }}">{{ registro.nombre }} {{ registro.paterno }} {{ registro.materno }}</a></td>
+                <td>{{ registro.sexo }}</td>
+                <td class="text-center">{{ edad }}</td>
+                <td>{{ registro.mail }}</td>
+                <td>{{ registro.procedencia }}</td>
+                <td>{{ registro.carrera }}</td>
+                <td>{{ registro.semestre }}</td>
+                <td>{{ registro.porcentaje }}</td>
+                <td>{{ registro.profesor }}</td>
+                <td>{{ registro.promedio }}</td>
+                {#                    <td>{{ registro.confirmado ? 'Yes' : 'No' }}</td>#}
+{#                <td>{{ registro.vegetariano ? 'Yes' : 'No' }}</td>#}
+                <td>{{ registro.restricciones }}</td>
+
+                <td>{{ registro.beca }}</td>
+                <td class="text-center">
+                    {% if registro.recomendacion != null or registro.cartaName != null %}
+                        <span class="badge bg-primary center"> {{ "Si" }}</span>
+                    {% else %}
+                        <span class="badge bg-secondary center"> {{"No"}}</span>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    {% if registro.aceptado == true %}
+                        <span class="badge bg-primary"> {{ "Si" }}</span>
+                    {% else %}
+                        <span class="badge bg-secondary"> {{"No"}}</span>
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="22">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"></script>
+
+    <script type="application/javascript">
+        $(document).ready(function() {
+            $('#example').DataTable();
+        } );
+    </script>
+
+{% endblock %}

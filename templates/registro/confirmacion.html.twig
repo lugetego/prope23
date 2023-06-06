@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <div class="container">
+        <div class="alert alert-light mt-5" role="alert">
+            <h4 class="alert-heading">{{"Gracias por su registro"}}</h4>
+            <p>{{ registro.nombre }} {{ registro.paterno }} {{ registro.materno }}</p>
+            <p>{{ "Recibirá un correo de confirmación a la dirección que nos proporcionó"}}: <i>{{ registro.mail }}</i></p>
+            <hr>
+            <p class="mb-0">{{ "Si no recibe el correo de confirmación debe verificar en su bandeja de correos no deseados, si no lo ha recibido debe escribir a"|trans }} webmaster<i class="fas fa-at"></i>matmor.unam.mx {{"para confirmar su registro"|trans}}</p>
+            <a href="{{ url_evento }}" class="btn btn-dark mt-5"><i class="fa-solid fa-check"></i> {{"Finalizar"}}</a>
+        </div>
+    </div>
+{% endblock %}

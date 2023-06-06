@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <div class="container">
+        <div class="alert alert-light" role="alert">
+            <h4 class="alert-heading"><i class="fa-solid fa-triangle-exclamation"></i> Importante</h4>
+            <ul>
+                <li><p>Debe asegurarse que el archivo a enviar a través de este formulario sea de un tamaño menor a 2MB y en formato PDF.</p></li>
+                <li><p>Al finalizar el envío de este formulario debe de visualizar una pantalla de confirmación además de recibir un correo electrónico
+                        a su cuenta y a la cuenta de correo del alumno que está recomendado,
+                        de no ser así favor de comunicarse al correo <mark>webmaster<i class="fa-solid fa-at"></i>matmor.unam.mx</mark>
+                        para asegurarse que se haya recibido su información.</p></li>
+            </ul>
+            <hr>
+            <p class="mb-0">Para enviar la información sobre la recomendación de <mark>{{ registro.nombre|title }}  {{ registro.paterno|title }} {{ registro.materno|title }}</mark>
+                puede llenar el campo <strong>Recomendación</strong> o bien
+                utilizar el campo <strong>Carta de recomendación</strong> para enviar un archivo PDF.</p>
+        </div>
+        {{ form_start(form) }}
+        <div class="col col-md-12 col-sm-12 ">
+            {{ form_row(form.recomendacion, {
+                label: 'Recomendación',
+                attr: {
+                    placeholder: '',
+                },
+                row_attr: {
+                    class: 'form-control',
+
+                }
+            }) }}
+        </div>
+        <div class="row pt-3">
+            <div class="col-md-4" >
+                <div>{{ form_label(form.cartaFile,'Carta de Recomendación') }}</div>
+                <div>{{ form_widget(form.cartaFile) }}</div>
+                <div>{{ form_errors(form.cartaFile) }}</div>
+            </div>
+        </div>
+        <div class="d-grid gap-2 pt-3 mb-2 col-3 mx-auto">
+            <button class="btn btn-dark"><h5> <i class="fa-regular fa-paper-plane"></i> {{ button_label|default('Enviar') }}</h5></button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
