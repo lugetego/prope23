@@ -136,11 +136,6 @@ class Registro
     private $curso1;
 
     /**
-     * @ORM\Column(type="string", length=500, nullable=true)
-     */
-    private $curso2;
-
-    /**
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $aceptado;
@@ -615,20 +610,5 @@ class Registro
         $this->curso1 = $curso1;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getCurso2()
-    {
-        return $this->curso2;
-    }
-
-    /**
-     * @param mixed $curso2
-     */
-    public function setCurso2($curso2): void
-    {
-        $this->curso2 = $curso2;
-    }
 
 }

@@ -97,11 +97,6 @@ class RegistroType extends AbstractType
             ->add('curso1',ChoiceType::class, [
                 'choices'  => [
                     'C2-Números complejos y polinomios' => 'C2',
-                ],
-                'placeholder' => 'Seleccionar',
-            ])
-            ->add('curso2',ChoiceType::class, [
-                'choices'  => [
                     'C3-Geometría en matrices y matrices en geometría' => 'C3',
                 ],
                 'placeholder' => 'Seleccionar',
